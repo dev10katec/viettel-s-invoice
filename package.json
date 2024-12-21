@@ -1,0 +1,37 @@
+{
+  "name": "viettel-s-invoice",
+  "version": "1.0.0",
+  "description": "Viettel S Invoice",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublish": "npm run build",
+    "lint": "eslint 'src/**/*.{ts,tsx}'",
+    "lint:fix": "eslint 'src/**/*.{ts,tsx}' --fix"
+  },
+  "keywords": [
+    "viettel",
+    "s-invoice",
+    "nodejs",
+    "express",
+    "typescript"
+  ],
+  "author": "Vo Duc Huy",
+  "maintainers": [
+    "voduchuy2001"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.8",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dev10katec/viettel-s-invoice"
+  }
+}
