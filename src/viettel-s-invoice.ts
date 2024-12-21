@@ -13,6 +13,7 @@ import { API_ENDPOINT } from "./constants";
 import ViettelSInvoiceException from "./exceptions/viettel-s-invoice-exception";
 import ReviewDraftInvoiceException from "./exceptions/review-draft-invoice-exception";
 import GetInvoiceException from "./exceptions/get-invoice-exception";
+import axios from "axios";
 
 class ViettelSInvoice {
   private username: string;
@@ -39,22 +40,15 @@ class ViettelSInvoice {
   }
 
   private async login(): Promise<IViettelSInvoiceLoginResponse> {
-    const response = await fetch(this.getApiUrl("/auth/login"), {
-      method: "POST",
-      body: JSON.stringify({
+    try {
+      const response = await axios.post(this.getApiUrl("/auth/login"), {
         username: this.username,
         password: this.password,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      const message = await response.text();
-      throw new LoginException(`Login failed: ${message}`);
+      });
+      return response.data as IViettelSInvoiceLoginResponse;
+    } catch (error) {
+      throw new LoginException(`Login failed: ${(<Error>error).message}`);
     }
-    return (await response.json()) as IViettelSInvoiceLoginResponse;
   }
 
   /**
@@ -69,27 +63,25 @@ class ViettelSInvoice {
   ): Promise<IDraftInvoiceResponse> {
     const { access_token } = await this.login();
 
-    const response = await fetch(
-      this.getApiUrl(
-        `/services/einvoiceapplication/api/InvoiceAPI/InvoiceUtilsWS/createInvoiceDraftPreview/${this.username}`
-      ),
-      {
-        method: "POST",
-        body: JSON.stringify(invoice),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
-    );
-    if (!response.ok) {
-      const message = await response.text();
+    try {
+      const response = await axios.post(
+        this.getApiUrl(
+          `/services/einvoiceapplication/api/InvoiceAPI/InvoiceUtilsWS/createInvoiceDraftPreview/${this.username}`
+        ),
+        invoice,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      );
+      return response.data as IDraftInvoiceResponse;
+    } catch (error) {
       throw new ReviewDraftInvoiceException(
-        `Review draft invoice failed: ${message}`
+        `Review draft invoice failed: ${(<Error>error).message}`
       );
     }
-
-    return (await response.json()) as IDraftInvoiceResponse;
   }
 
   /**
@@ -104,25 +96,25 @@ class ViettelSInvoice {
   ): Promise<IViettelSInvoiceResponse> {
     const { access_token } = await this.login();
 
-    const response = await fetch(
-      this.getApiUrl(
-        `/services/einvoiceapplication/api/InvoiceAPI/InvoiceWS/createInvoice/${this.username}`
-      ),
-      {
-        method: "POST",
-        body: JSON.stringify(invoice),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const message = await response.text();
-      throw new CreateInvoiceException(`Create invoice failed: ${message}`);
+    try {
+      const response = await axios.post(
+        this.getApiUrl(
+          `/services/einvoiceapplication/api/InvoiceAPI/InvoiceWS/createInvoice/${this.username}`
+        ),
+        invoice,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      );
+      return response.data as IViettelSInvoiceResponse;
+    } catch (error) {
+      throw new CreateInvoiceException(
+        `Create invoice failed: ${(<Error>error).message}`
+      );
     }
-    return (await response.json()) as IViettelSInvoiceResponse;
   }
 
   /**
@@ -136,31 +128,30 @@ class ViettelSInvoice {
     transactionUuid: string
   ): Promise<IViettelSInvoiceDetailResponse> {
     const { access_token } = await this.login();
-    const buildDataToSend: string = new URLSearchParams({
+    const buildDataToSend = new URLSearchParams({
       supplierTaxCode: this.username,
       transactionUuid,
-    }).toString();
+    });
 
-    const response = await fetch(
-      this.getApiUrl(
-        "/services/einvoiceapplication/api/InvoiceAPI/InvoiceWS/searchInvoiceByTransactionUuid"
-      ),
-      {
-        method: "POST",
-        body: buildDataToSend,
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const message = await response.text();
-      throw new GetInvoiceException(`Get invoice failed: ${message}`);
+    try {
+      const response = await axios.post(
+        this.getApiUrl(
+          "/services/einvoiceapplication/api/InvoiceAPI/InvoiceWS/searchInvoiceByTransactionUuid"
+        ),
+        buildDataToSend,
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      );
+      return response.data as IViettelSInvoiceDetailResponse;
+    } catch (error) {
+      throw new GetInvoiceException(
+        `Get invoice failed: ${(<Error>error).message}`
+      );
     }
-
-    return (await response.json()) as IViettelSInvoiceDetailResponse;
   }
 
   /**
@@ -176,30 +167,30 @@ class ViettelSInvoice {
       throw new GetInvoicesException("Invalid date format");
     }
     const { access_token } = await this.login();
-    const response = await fetch(
-      this.getApiUrl(
-        "/services/einvoiceapplication/api/InvoiceAPI/InvoiceUtilsWS/getListInvoiceDataControl"
-      ),
-      {
-        method: "POST",
-        body: JSON.stringify({
+
+    try {
+      const response = await axios.post(
+        this.getApiUrl(
+          "/services/einvoiceapplication/api/InvoiceAPI/InvoiceUtilsWS/getListInvoiceDataControl"
+        ),
+        {
           supplierTaxCode: this.username,
           fromDate,
           toDate,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${access_token}`,
         },
-      }
-    );
-
-    if (!response.ok) {
-      const message = await response.text();
-      throw new GetInvoicesException(`Get invoices failed: ${message}`);
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      );
+      return response.data as IViettelSInvoiceDetailResponse;
+    } catch (error) {
+      throw new GetInvoicesException(
+        `Get invoices failed: ${(<Error>error).message}`
+      );
     }
-
-    return (await response.json()) as IViettelSInvoiceDetailResponse;
   }
 }
 
