@@ -1,6 +1,6 @@
 {
   "name": "viettel-s-invoice",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Viettel S Invoice",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -33,5 +33,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/dev10katec/viettel-s-invoice"
+  },
+  "dependencies": {
+    "axios": "^1.7.9"
   }
 }
