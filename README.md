@@ -1,7 +1,8 @@
-# ViettelSInvoice API Integration
+# Viettel S Invoice API Integration
 
-Note: This is an unofficial project. It is not affiliated with or endorsed by Viettel.
-This project provides a class `ViettelSInvoice` that allows interaction with the ViettelS Invoice API.
+> Note: This is an `UNOFFICIAL` project. It is not affiliated with or endorsed by Viettel.
+
+This project provides a class `ViettelSInvoice` that allows interaction with the Viettel S Invoice API.
 
 ## Table of Contents
 
@@ -18,25 +19,25 @@ This project provides a class `ViettelSInvoice` that allows interaction with the
 
 ## Prerequisites
 
-Before using the ViettelSInvoice API, you will need:
+Before using the Viettel S Invoice API, you will need:
 
-- An active ViettelS Invoice account with a valid username and password.
-- An API endpoint URL to connect to the ViettelS Invoice API.
+- An active Viettel S Invoice account with a valid username and password.
+- An API endpoint URL to connect to the Viettel S Invoice API.
 - A basic understanding of how to interact with APIs.
 
 ## Installation
 
 ```BASH
-npm install viettel-s-invoice
+npm install --save viettel-s-invoice
 ```
 
 ## Usage
 
 ```JS
 const viettelSInvoice = new ViettelSInvoice({
-  username: 'your-username',
-  password: 'your-password',
-  apiEndPoint: 'https://api.viettel.vn',
+  username: 'your-username', // required
+  password: 'your-password', // required
+  apiEndPoint: 'https://api.viettel.vn', // optional
 });
 ```
 
