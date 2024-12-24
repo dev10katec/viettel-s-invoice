@@ -26,8 +26,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build package
-        run: npm run build
+      - name: Build package for publish
+        run: npm run prepublish
 
       - name: Publish to npm
         run: npm publish
