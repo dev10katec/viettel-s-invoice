@@ -19,9 +19,9 @@ import GetInvoiceFileException from './exceptions/get-invoice-file-exception'
 import { GetInvoiceFileParams } from './types'
 
 class ViettelSInvoice {
-  private username: string
-  private password: string
-  private apiEndPoint: string
+  private readonly username: string
+  private readonly password: string
+  private readonly apiEndPoint: string
 
   constructor({ apiEndPoint, username, password }: IViettelSInvoice) {
     this.apiEndPoint = apiEndPoint || API_ENDPOINT
