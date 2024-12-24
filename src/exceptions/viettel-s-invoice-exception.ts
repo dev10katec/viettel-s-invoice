@@ -1,8 +1,8 @@
 class ViettelSInvoiceException extends Error {
   constructor(message: string) {
-    super(message);
-    this.name = "ViettelSInvoiceException";
+    super(message)
+    this.name = 'ViettelSInvoiceException'
   }
 }
 
-export default ViettelSInvoiceException;
+export default ViettelSInvoiceException

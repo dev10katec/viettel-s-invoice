@@ -1,8 +1,8 @@
 class ReviewDraftInvoiceException extends Error {
   constructor(message: string) {
-    super(message);
-    this.name = "ReviewDraftInvoiceException";
+    super(message)
+    this.name = 'ReviewDraftInvoiceException'
   }
 }
 
-export default ReviewDraftInvoiceException;
+export default ReviewDraftInvoiceException

@@ -1,3 +1,3 @@
-import ViettelSInvoice from "./viettel-s-invoice";
+import ViettelSInvoice from './viettel-s-invoice'
 
-export default ViettelSInvoice;
+export default ViettelSInvoice
