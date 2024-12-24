@@ -12,7 +12,7 @@ import CreateInvoiceException from './exceptions/create-invoice-exception'
 import GetInvoicesException from './exceptions/get-invoices-exception'
 import { API_ENDPOINT } from './constants'
 import ViettelSInvoiceException from './exceptions/viettel-s-invoice-exception'
-import ReviewDraftInvoiceException from './exceptions/review-draft-invoice-exception'
+import PreviewDraftInvoiceException from './exceptions/preview-draft-invoice-exception'
 import GetInvoiceException from './exceptions/get-invoice-exception'
 import axios from 'axios'
 import GetInvoiceFileException from './exceptions/get-invoice-file-exception'
@@ -50,7 +50,15 @@ class ViettelSInvoice {
       })
       return response.data as IViettelSInvoiceLoginResponse
     } catch (error) {
-      throw new LoginException(`Login failed: ${(<Error>error).message}`)
+      if (axios.isAxiosError(error)) {
+        const message = error.response
+          ? `Response error: ${JSON.stringify(error.response.data)}`
+          : error.request
+            ? `Request error: ${error.request}`
+            : `Axios error: ${error.message}`
+        throw new LoginException(message)
+      }
+      throw new LoginException(`Unexpected error: ${(error as Error).message}`)
     }
   }
 
@@ -79,7 +87,15 @@ class ViettelSInvoice {
       )
       return response.data as IDraftInvoiceResponse
     } catch (error) {
-      throw new ReviewDraftInvoiceException(`Review draft invoice failed: ${(<Error>error).message}`)
+      if (axios.isAxiosError(error)) {
+        const message = error.response
+          ? `Response error: ${JSON.stringify(error.response.data)}`
+          : error.request
+            ? `Request error: ${error.request}`
+            : `Axios error: ${error.message}`
+        throw new PreviewDraftInvoiceException(message)
+      }
+      throw new PreviewDraftInvoiceException(`Unexpected error: ${(error as Error).message}`)
     }
   }
 
@@ -106,7 +122,15 @@ class ViettelSInvoice {
       )
       return response.data as IViettelSInvoiceResponse
     } catch (error) {
-      throw new CreateInvoiceException(`Create invoice failed: ${(<Error>error).message}`)
+      if (axios.isAxiosError(error)) {
+        const message = error.response
+          ? `Response error: ${JSON.stringify(error.response.data)}`
+          : error.request
+            ? `Request error: ${error.request}`
+            : `Axios error: ${error.message}`
+        throw new CreateInvoiceException(message)
+      }
+      throw new CreateInvoiceException(`Unexpected error: ${(error as Error).message}`)
     }
   }
 
@@ -137,7 +161,15 @@ class ViettelSInvoice {
       )
       return response.data as IViettelSInvoiceDetailResponse
     } catch (error) {
-      throw new GetInvoiceException(`Get invoice failed: ${(<Error>error).message}`)
+      if (axios.isAxiosError(error)) {
+        const message = error.response
+          ? `Response error: ${JSON.stringify(error.response.data)}`
+          : error.request
+            ? `Request error: ${error.request}`
+            : `Axios error: ${error.message}`
+        throw new GetInvoiceException(message)
+      }
+      throw new GetInvoiceException(`Unexpected error: ${(error as Error).message}`)
     }
   }
 
@@ -172,7 +204,15 @@ class ViettelSInvoice {
       )
       return response.data as IViettelSInvoiceDetailResponse
     } catch (error) {
-      throw new GetInvoicesException(`Get invoices failed: ${(<Error>error).message}`)
+      if (axios.isAxiosError(error)) {
+        const message = error.response
+          ? `Response error: ${JSON.stringify(error.response.data)}`
+          : error.request
+            ? `Request error: ${error.request}`
+            : `Axios error: ${error.message}`
+        throw new GetInvoicesException(message)
+      }
+      throw new GetInvoicesException(`Unexpected error: ${(error as Error).message}`)
     }
   }
 
@@ -210,7 +250,15 @@ class ViettelSInvoice {
       )
       return response.data as IViettelSInvoiceGetFileResponse
     } catch (error) {
-      throw new GetInvoiceFileException(`Get invoice file failed: ${(<Error>error).message}`)
+      if (axios.isAxiosError(error)) {
+        const message = error.response
+          ? `Response error: ${JSON.stringify(error.response.data)}`
+          : error.request
+            ? `Request error: ${error.request}`
+            : `Axios error: ${error.message}`
+        throw new GetInvoiceFileException(message)
+      }
+      throw new GetInvoiceFileException(`Unexpected error: ${(error as Error).message}`)
     }
   }
 }

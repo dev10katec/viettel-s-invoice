@@ -94,6 +94,7 @@ The following exceptions are handled by the ViettelSInvoice class:
 - ReviewDraftInvoiceException: Thrown if reviewing a draft invoice fails.
 - GetInvoiceException: Thrown if retrieving an invoice fails.
 - GetInvoicesException: Thrown if retrieving invoices by date range fails.
+- GetInvoiceFileException: Thrown if retrieving an invoice file fails.
 - Each exception includes a descriptive error message.
 
 ## License
