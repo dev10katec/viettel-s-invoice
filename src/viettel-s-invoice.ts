@@ -1,8 +1,9 @@
 import {
-  IDraftInvoiceResponse,
+  IDraftInvoicePreviewResponse,
   IInvoice,
   IViettelSInvoice,
   IViettelSInvoiceDetailResponse,
+  IViettelSInvoiceDetailsResponse,
   IViettelSInvoiceGetFileResponse,
   IViettelSInvoiceLoginResponse,
   IViettelSInvoiceResponse
@@ -31,6 +32,14 @@ class ViettelSInvoice {
     if (!this.username || !this.password) {
       throw new ViettelSInvoiceException('Username or password is required')
     }
+    if (apiEndPoint && !this.isValidUrl(apiEndPoint)) {
+      throw new ViettelSInvoiceException('API endpoint is not valid')
+    }
+  }
+
+  private isValidUrl(url: string): boolean {
+    const pattern = /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-]*)*$/
+    return pattern.test(url)
   }
 
   private validateDate(date: string): boolean {
@@ -69,7 +78,7 @@ class ViettelSInvoice {
    * @returns A promise that resolves to the draft invoice response.
    * @throws ReviewDraftInvoiceException if the server response is not successful.
    */
-  public async previewDraftInvoice(invoice: IInvoice): Promise<IDraftInvoiceResponse> {
+  public async previewDraftInvoice(invoice: IInvoice): Promise<IDraftInvoicePreviewResponse> {
     const { access_token } = await this.login()
 
     try {
@@ -85,7 +94,7 @@ class ViettelSInvoice {
           }
         }
       )
-      return response.data as IDraftInvoiceResponse
+      return response.data as IDraftInvoicePreviewResponse
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const message = error.response
@@ -181,7 +190,7 @@ class ViettelSInvoice {
    * @returns A promise that resolves to the invoice detail response.
    * @throws GetInvoicesException if the date format is invalid or the server response is not successful.
    */
-  public async getInvoicesByDateRange(fromDate: string, toDate: string) {
+  public async getInvoicesByDateRange(fromDate: string, toDate: string): Promise<IViettelSInvoiceDetailsResponse> {
     if (!this.validateDate(fromDate) || !this.validateDate(toDate)) {
       throw new GetInvoicesException('Invalid date format')
     }
@@ -202,7 +211,7 @@ class ViettelSInvoice {
           }
         }
       )
-      return response.data as IViettelSInvoiceDetailResponse
+      return response.data as IViettelSInvoiceDetailsResponse
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const message = error.response
