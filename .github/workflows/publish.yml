@@ -18,6 +18,16 @@ jobs:
         with:
           node-version: '20.10.0'
           cache: 'npm'
+          registry-url: 'https://registry.npmjs.org/'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN  }}
+
+      - name: Verify npm Authentication
+        run: |
+          npm whoami
+          npm config get registry
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Install dependencies
         run: npm install
