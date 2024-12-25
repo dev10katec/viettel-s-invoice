@@ -1,6 +1,6 @@
 {
   "name": "viettel-s-invoice",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Viettel S Invoice",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -10,7 +10,8 @@
   "scripts": {
     "build": "tsc",
     "prepublish": "npm run build",
-    "prettier:fix": "prettier --write ."
+    "prettier:fix": "prettier --write .",
+    "test": "jest"
   },
   "keywords": [
     "viettel",
@@ -26,8 +27,11 @@
   "license": "MIT",
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.8",
+    "@types/jest": "^29.5.14",
     "@types/node": "^22.10.2",
+    "jest": "^29.7.0",
     "prettier": "^3.4.2",
+    "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
   },

@@ -1,5 +1,5 @@
 interface IViettelSInvoice {
-  apiEndPoint: string
+  apiEndPoint?: string
   username: string
   password: string
 }
@@ -29,48 +29,48 @@ interface IInvoice {
 }
 
 interface GeneralInvoiceInfo {
-  invoiceType: string
+  invoiceType?: string
   templateCode: string
   invoiceSeries: string
   currencyCode: string
-  exchangeRate: string
-  invoiceNote: string
-  adjustmentType: string
+  exchangeRate: string | number
+  invoiceNote?: string
+  adjustmentType?: string
   paymentStatus: boolean
-  cusGetInvoiceRight: boolean
-  invoiceIssuedDate: any
-  transactionUuid: any
-  reservationCode: any
+  cusGetInvoiceRight?: boolean
+  invoiceIssuedDate?: number | string
+  transactionUuid?: number | string
+  reservationCode?: number | string
 }
 
 interface BuyerInfo {
   buyerName: string
-  buyerLegalName: string
-  buyerTaxCode: string
+  buyerLegalName?: string
+  buyerTaxCode?: string
   buyerAddressLine: string
-  buyerPostalCode: string
-  buyerDistrictName: string
-  buyerCityName: string
-  buyerCountryCode: string
-  buyerPhoneNumber: string
-  buyerEmail: string
-  buyerBankName: string
-  buyerBankAccount: string
-  buyerCode: string
-  buyerBirthDay: string
-  buyerNotGetInvoice: string
+  buyerPostalCode?: string
+  buyerDistrictName?: string
+  buyerCityName?: string
+  buyerCountryCode?: string
+  buyerPhoneNumber?: string
+  buyerEmail?: string
+  buyerBankName?: string
+  buyerBankAccount?: string
+  buyerCode?: string
+  buyerBirthDay?: string
+  buyerNotGetInvoice?: string
 }
 
 interface SellerInfo {
   sellerLegalName: string
-  sellerTaxCode: string
+  sellerTaxCode?: string
   sellerAddressLine: string
-  sellerPhoneNumber: string
-  sellerFaxNumber: string
-  sellerEmail: string
-  sellerBankName: string
-  sellerBankAccount: string
-  sellerWebsite: string
+  sellerPhoneNumber?: string
+  sellerFaxNumber?: string
+  sellerEmail?: string
+  sellerBankName?: string
+  sellerBankAccount?: string
+  sellerWebsite?: string
 }
 
 interface Payment {
@@ -81,19 +81,19 @@ interface Payment {
 interface DeliveryInfo {}
 
 interface ItemInfo {
-  lineNumber: number
-  selection: number
-  itemCode: string
-  itemName: string
+  lineNumber?: number
+  selection?: number
+  itemCode?: string
+  itemName?: string
   unitName?: string
   unitPrice?: number
   quantity?: number
-  itemTotalAmountWithoutTax?: number
+  itemTotalAmountWithoutTax: number
   itemTotalAmountAfterDiscount?: number
   taxPercentage: number
   taxAmount: number
   itemDiscount: number
-  isIncreaseItem?: boolean
+  isIncreaseItem?: boolean | null
 }
 
 interface SummarizeInfo {
@@ -101,7 +101,7 @@ interface SummarizeInfo {
   totalAmountWithoutTax: number
   totalTaxAmount: number
   totalAmountWithTax: number
-  totalAmountWithTaxInWords: string
+  totalAmountWithTaxInWords?: string
 }
 
 interface TaxBreakdown {
@@ -110,7 +110,7 @@ interface TaxBreakdown {
   taxAmount: number
 }
 
-interface IDraftInvoiceResponse {
+interface IDraftInvoicePreviewResponse {
   errorCode: any
   description: any
   fileToBytes: string
@@ -155,12 +155,61 @@ interface IViettelSInvoiceGetFileResponse {
   fileName: string
 }
 
+interface IViettelSInvoiceDetailsResponse {
+  errorCode: any
+  description: any
+  totalRows: number
+  invoices: Invoice[]
+}
+
+interface Invoice {
+  invoiceId: number
+  invoiceType: string
+  adjustmentType: string
+  templateCode: string
+  invoiceSeri: string
+  invoiceNumber: string
+  invoiceNo: string
+  currency: string
+  total: number
+  issueDate: number
+  issueDateStr: any
+  state: number
+  requestDate: any
+  description: any
+  buyerIdNo: any
+  stateCode: number
+  subscriberNumber: any
+  paymentStatus: number
+  viewStatus: any
+  downloadStatus: any
+  exchangeStatus: number
+  numOfExchange: any
+  createTime: number
+  contractId: any
+  contractNo: any
+  supplierTaxCode: string
+  buyerTaxCode: string
+  totalBeforeTax: number
+  taxAmount: number
+  taxRate: any
+  paymentMethod: string
+  paymentTime: any
+  customerId: any
+  no: any
+  paymentStatusName: string
+  buyerName: string
+  transactionUuid: string
+  originalInvoiceId: any
+}
+
 export {
   IViettelSInvoice,
   IViettelSInvoiceLoginResponse,
   IInvoice,
-  IDraftInvoiceResponse,
+  IDraftInvoicePreviewResponse,
   IViettelSInvoiceResponse,
   IViettelSInvoiceDetailResponse,
-  IViettelSInvoiceGetFileResponse
+  IViettelSInvoiceGetFileResponse,
+  IViettelSInvoiceDetailsResponse
 }
