@@ -1,30 +1,32 @@
 import {
-  IDraftInvoicePreviewResponse,
-  IInvoice,
+  IViettelSInvoiceDraftInvoicePreviewResponse,
   IViettelSInvoice,
+  IViettelSInvoiceConfiguration,
   IViettelSInvoiceDetailResponse,
   IViettelSInvoiceDetailsResponse,
   IViettelSInvoiceGetFileResponse,
   IViettelSInvoiceLoginResponse,
   IViettelSInvoiceResponse
 } from './interfaces/viettel-s-invoice'
-import LoginException from './exceptions/login-exception'
-import CreateInvoiceException from './exceptions/create-invoice-exception'
-import GetInvoicesException from './exceptions/get-invoices-exception'
 import { API_ENDPOINT } from './constants'
-import ViettelSInvoiceException from './exceptions/viettel-s-invoice-exception'
-import PreviewDraftInvoiceException from './exceptions/preview-draft-invoice-exception'
-import GetInvoiceException from './exceptions/get-invoice-exception'
 import axios from 'axios'
-import GetInvoiceFileException from './exceptions/get-invoice-file-exception'
 import { GetInvoiceFileParams } from './types'
+import {
+  ViettelSInvoiceLoginException,
+  ViettelSInvoiceCreateInvoiceException,
+  ViettelSInvoiceException,
+  ViettelSInvoiceGetInvoiceException,
+  ViettelSInvoiceGetInvoiceFileException,
+  ViettelSInvoiceGetInvoicesException,
+  ViettelSInvoicePreviewDraftInvoiceException
+} from './exceptions'
 
 class ViettelSInvoice {
   private readonly username: string
   private readonly password: string
   private readonly apiEndPoint: string
 
-  constructor({ apiEndPoint, username, password }: IViettelSInvoice) {
+  constructor({ apiEndPoint, username, password }: IViettelSInvoiceConfiguration) {
     this.apiEndPoint = apiEndPoint || API_ENDPOINT
     this.username = username
     this.password = password
@@ -53,21 +55,16 @@ class ViettelSInvoice {
 
   private async login(): Promise<IViettelSInvoiceLoginResponse> {
     try {
-      const response = await axios.post(this.getApiUrl('/auth/login'), {
+      const { data } = await axios.post<IViettelSInvoiceLoginResponse>(this.getApiUrl('/auth/login'), {
         username: this.username,
         password: this.password
       })
-      return response.data as IViettelSInvoiceLoginResponse
+      return data
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const message = error.response
-          ? `Response error: ${JSON.stringify(error.response.data)}`
-          : error.request
-            ? `Request error: ${error.request}`
-            : `Axios error: ${error.message}`
-        throw new LoginException(message)
+        throw new ViettelSInvoiceLoginException(error.message, error?.response?.data)
       }
-      throw new LoginException(`Unexpected error: ${(error as Error).message}`)
+      throw new ViettelSInvoiceLoginException(`Unexpected error: ${(error as Error).message}`, error)
     }
   }
 
@@ -78,11 +75,11 @@ class ViettelSInvoice {
    * @returns A promise that resolves to the draft invoice response.
    * @throws ReviewDraftInvoiceException if the server response is not successful.
    */
-  public async previewDraftInvoice(invoice: IInvoice): Promise<IDraftInvoicePreviewResponse> {
+  public async previewDraftInvoice(invoice: IViettelSInvoice): Promise<IViettelSInvoiceDraftInvoicePreviewResponse> {
     const { access_token } = await this.login()
 
     try {
-      const response = await axios.post(
+      const { data } = await axios.post<IViettelSInvoiceDraftInvoicePreviewResponse>(
         this.getApiUrl(
           `/services/einvoiceapplication/api/InvoiceAPI/InvoiceUtilsWS/createInvoiceDraftPreview/${this.username}`
         ),
@@ -94,17 +91,12 @@ class ViettelSInvoice {
           }
         }
       )
-      return response.data as IDraftInvoicePreviewResponse
+      return data
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const message = error.response
-          ? `Response error: ${JSON.stringify(error.response.data)}`
-          : error.request
-            ? `Request error: ${error.request}`
-            : `Axios error: ${error.message}`
-        throw new PreviewDraftInvoiceException(message)
+        throw new ViettelSInvoicePreviewDraftInvoiceException(error.message, error?.response?.data)
       }
-      throw new PreviewDraftInvoiceException(`Unexpected error: ${(error as Error).message}`)
+      throw new ViettelSInvoicePreviewDraftInvoiceException(`Unexpected error: ${(error as Error).message}`)
     }
   }
 
@@ -113,13 +105,13 @@ class ViettelSInvoice {
    *
    * @param invoice - The invoice data to be created.
    * @returns A promise that resolves to the invoice response.
-   * @throws CreateInvoiceException if the server response is not successful.
+   * @throws ViettelSInvoiceCreateInvoiceException if the server response is not successful.
    */
-  public async createInvoice(invoice: IInvoice): Promise<IViettelSInvoiceResponse> {
+  public async createInvoice(invoice: IViettelSInvoice): Promise<IViettelSInvoiceResponse> {
     const { access_token } = await this.login()
 
     try {
-      const response = await axios.post(
+      const { data } = await axios.post<IViettelSInvoiceResponse>(
         this.getApiUrl(`/services/einvoiceapplication/api/InvoiceAPI/InvoiceWS/createInvoice/${this.username}`),
         invoice,
         {
@@ -129,17 +121,12 @@ class ViettelSInvoice {
           }
         }
       )
-      return response.data as IViettelSInvoiceResponse
+      return data
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const message = error.response
-          ? `Response error: ${JSON.stringify(error.response.data)}`
-          : error.request
-            ? `Request error: ${error.request}`
-            : `Axios error: ${error.message}`
-        throw new CreateInvoiceException(message)
+        throw new ViettelSInvoiceCreateInvoiceException(error.message, error?.response?.data)
       }
-      throw new CreateInvoiceException(`Unexpected error: ${(error as Error).message}`)
+      throw new ViettelSInvoiceCreateInvoiceException(`Unexpected error: ${(error as Error).message}`, error)
     }
   }
 
@@ -148,7 +135,7 @@ class ViettelSInvoice {
    *
    * @param transactionUuid - The unique identifier for the transaction.
    * @returns A promise that resolves to the invoice detail response.
-   * @throws GetInvoiceException if the server response is not successful.
+   * @throws ViettelSInvoiceGetInvoiceException if the server response is not successful.
    */
   public async getInvoiceByTransactionUuid(transactionUuid: string): Promise<IViettelSInvoiceDetailResponse> {
     const { access_token } = await this.login()
@@ -158,7 +145,7 @@ class ViettelSInvoice {
     })
 
     try {
-      const response = await axios.post(
+      const { data } = await axios.post<IViettelSInvoiceDetailResponse>(
         this.getApiUrl('/services/einvoiceapplication/api/InvoiceAPI/InvoiceWS/searchInvoiceByTransactionUuid'),
         buildDataToSend,
         {
@@ -168,17 +155,12 @@ class ViettelSInvoice {
           }
         }
       )
-      return response.data as IViettelSInvoiceDetailResponse
+      return data
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const message = error.response
-          ? `Response error: ${JSON.stringify(error.response.data)}`
-          : error.request
-            ? `Request error: ${error.request}`
-            : `Axios error: ${error.message}`
-        throw new GetInvoiceException(message)
+        throw new ViettelSInvoiceGetInvoiceException(error.message, error?.response?.data)
       }
-      throw new GetInvoiceException(`Unexpected error: ${(error as Error).message}`)
+      throw new ViettelSInvoiceGetInvoiceException(`Unexpected error: ${(error as Error).message}`, error)
     }
   }
 
@@ -188,16 +170,16 @@ class ViettelSInvoice {
    * @param fromDate - The start date of the range in 'dd/MM/yyyy' format.
    * @param toDate - The end date of the range in 'dd/MM/yyyy' format.
    * @returns A promise that resolves to the invoice detail response.
-   * @throws GetInvoicesException if the date format is invalid or the server response is not successful.
+   * @throws ViettelSInvoiceGetInvoicesException if the date format is invalid or the server response is not successful.
    */
   public async getInvoicesByDateRange(fromDate: string, toDate: string): Promise<IViettelSInvoiceDetailsResponse> {
     if (!this.validateDate(fromDate) || !this.validateDate(toDate)) {
-      throw new GetInvoicesException('Invalid date format')
+      throw new ViettelSInvoiceGetInvoicesException('Invalid date format: dd/MM/yyyy')
     }
     const { access_token } = await this.login()
 
     try {
-      const response = await axios.post(
+      const { data } = await axios.post<IViettelSInvoiceDetailsResponse>(
         this.getApiUrl('/services/einvoiceapplication/api/InvoiceAPI/InvoiceUtilsWS/getListInvoiceDataControl'),
         {
           supplierTaxCode: this.username,
@@ -211,17 +193,12 @@ class ViettelSInvoice {
           }
         }
       )
-      return response.data as IViettelSInvoiceDetailsResponse
+      return data
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const message = error.response
-          ? `Response error: ${JSON.stringify(error.response.data)}`
-          : error.request
-            ? `Request error: ${error.request}`
-            : `Axios error: ${error.message}`
-        throw new GetInvoicesException(message)
+        throw new ViettelSInvoiceGetInvoicesException(error.message, error?.response?.data)
       }
-      throw new GetInvoicesException(`Unexpected error: ${(error as Error).message}`)
+      throw new ViettelSInvoiceGetInvoicesException(`Unexpected error: ${(error as Error).message}`, error)
     }
   }
 
@@ -232,7 +209,7 @@ class ViettelSInvoice {
    * @param templateCode - The template code associated with the invoice.
    * @param fileType - The type of file to retrieve (PDF, ZIP).
    * @returns A promise that resolves to the invoice file response.
-   * @throws GetInvoiceFileException if the server response is not successful.
+   * @throws ViettelSInvoiceGetInvoiceFileException if the server response is not successful.
    */
   async getInvoiceFile({
     invoiceNo,
@@ -242,7 +219,7 @@ class ViettelSInvoice {
     const { access_token } = await this.login()
 
     try {
-      const response = await axios.post(
+      const { data } = await axios.post<IViettelSInvoiceGetFileResponse>(
         this.getApiUrl('/services/einvoiceapplication/api/InvoiceAPI/InvoiceUtilsWS/getInvoiceRepresentationFile'),
         {
           supplierTaxCode: this.username,
@@ -257,17 +234,12 @@ class ViettelSInvoice {
           }
         }
       )
-      return response.data as IViettelSInvoiceGetFileResponse
+      return data
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const message = error.response
-          ? `Response error: ${JSON.stringify(error.response.data)}`
-          : error.request
-            ? `Request error: ${error.request}`
-            : `Axios error: ${error.message}`
-        throw new GetInvoiceFileException(message)
+        throw new ViettelSInvoiceGetInvoiceFileException(error.message, error?.response?.data)
       }
-      throw new GetInvoiceFileException(`Unexpected error: ${(error as Error).message}`)
+      throw new ViettelSInvoiceGetInvoiceFileException(`Unexpected error: ${(error as Error).message}`, error)
     }
   }
 }

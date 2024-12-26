@@ -1,12 +1,14 @@
-import CreateInvoiceException from '../src/exceptions/create-invoice-exception'
-import GetInvoiceException from '../src/exceptions/get-invoice-exception'
-import GetInvoiceFileException from '../src/exceptions/get-invoice-file-exception'
-import GetInvoicesException from '../src/exceptions/get-invoices-exception'
-import LoginException from '../src/exceptions/login-exception'
-import PreviewDraftInvoiceException from '../src/exceptions/preview-draft-invoice-exception'
 import {
-  IDraftInvoicePreviewResponse,
-  IInvoice,
+  ViettelSInvoiceCreateInvoiceException,
+  ViettelSInvoiceGetInvoiceException,
+  ViettelSInvoiceGetInvoiceFileException,
+  ViettelSInvoiceGetInvoicesException,
+  ViettelSInvoiceLoginException,
+  ViettelSInvoicePreviewDraftInvoiceException
+} from '../src/exceptions'
+import {
+  IViettelSInvoiceDraftInvoicePreviewResponse,
+  IViettelSInvoice,
   IViettelSInvoiceDetailResponse,
   IViettelSInvoiceDetailsResponse,
   IViettelSInvoiceGetFileResponse,
@@ -57,21 +59,21 @@ describe('ViettelSInvoice', () => {
       })
     })
 
-    it('should throw LoginException on error', async () => {
+    it('should throw ViettelSInvoiceLoginException on error', async () => {
       mockAxios.post.mockRejectedValueOnce({
         response: {
           data: { message: 'Invalid credentials' }
         }
       })
 
-      await expect(viettelSInvoice['login']()).rejects.toThrow(LoginException)
+      await expect(viettelSInvoice['login']()).rejects.toThrow(ViettelSInvoiceLoginException)
     })
   })
 
   describe('previewDraftInvoice', () => {
     it('should return draft invoice response on success', async () => {
       const mockToken = { access_token: 'mock_access_token' }
-      const mockInvoice: IInvoice = {
+      const mockInvoice: IViettelSInvoice = {
         buyerInfo: {
           buyerName: 'xyz',
           buyerLegalName: 'abc',
@@ -148,7 +150,7 @@ describe('ViettelSInvoice', () => {
           }
         ]
       }
-      const mockResponse: IDraftInvoicePreviewResponse = {
+      const mockResponse: IViettelSInvoiceDraftInvoicePreviewResponse = {
         errorCode: null,
         description: null,
         fileToBytes: 'mock file preview',
@@ -173,9 +175,9 @@ describe('ViettelSInvoice', () => {
       )
     })
 
-    it('should throw PreviewDraftInvoiceException on error', async () => {
+    it('should throw ViettelSInvoicePreviewDraftInvoiceException on error', async () => {
       const mockToken = { access_token: 'mock_access_token' }
-      const mockInvoice: IInvoice = {
+      const mockInvoice: IViettelSInvoice = {
         buyerInfo: {
           buyerName: 'xyz',
           buyerLegalName: 'abc',
@@ -260,14 +262,16 @@ describe('ViettelSInvoice', () => {
         }
       })
 
-      await expect(viettelSInvoice.previewDraftInvoice(mockInvoice)).rejects.toThrow(PreviewDraftInvoiceException)
+      await expect(viettelSInvoice.previewDraftInvoice(mockInvoice)).rejects.toThrow(
+        ViettelSInvoicePreviewDraftInvoiceException
+      )
     })
   })
 
   describe('createInvoice', () => {
     it('should return invoice response on success', async () => {
       const mockToken = { access_token: 'mock_access_token' }
-      const mockInvoice: IInvoice = {
+      const mockInvoice: IViettelSInvoice = {
         buyerInfo: {
           buyerName: 'xyz',
           buyerLegalName: 'abc',
@@ -373,9 +377,9 @@ describe('ViettelSInvoice', () => {
       )
     })
 
-    it('should throw CreateInvoiceException on error', async () => {
+    it('should throw ViettelSInvoiceCreateInvoiceException on error', async () => {
       const mockToken = { access_token: 'mock_access_token' }
-      const mockInvoice: IInvoice = {
+      const mockInvoice: IViettelSInvoice = {
         buyerInfo: {
           buyerName: 'xyz',
           buyerLegalName: 'abc',
@@ -460,7 +464,7 @@ describe('ViettelSInvoice', () => {
         }
       })
 
-      await expect(viettelSInvoice.createInvoice(mockInvoice)).rejects.toThrow(CreateInvoiceException)
+      await expect(viettelSInvoice.createInvoice(mockInvoice)).rejects.toThrow(ViettelSInvoiceCreateInvoiceException)
     })
   })
 
@@ -504,7 +508,7 @@ describe('ViettelSInvoice', () => {
       )
     })
 
-    it('should throw GetInvoiceException on error', async () => {
+    it('should throw ViettelSInvoiceGetInvoiceException on error', async () => {
       const mockToken = { access_token: 'mock_access_token' }
 
       jest.spyOn(viettelSInvoice as any, 'login').mockResolvedValueOnce(mockToken)
@@ -515,7 +519,7 @@ describe('ViettelSInvoice', () => {
       })
 
       await expect(viettelSInvoice.getInvoiceByTransactionUuid('mock_transaction_uuid')).rejects.toThrow(
-        GetInvoiceException
+        ViettelSInvoiceGetInvoiceException
       )
     })
   })
@@ -595,13 +599,13 @@ describe('ViettelSInvoice', () => {
       )
     })
 
-    it('should throw GetInvoicesException for invalid date format', async () => {
+    it('should throw ViettelSInvoiceGetInvoicesException for invalid date format', async () => {
       await expect(viettelSInvoice.getInvoicesByDateRange('invalid_date', '24/12/2024')).rejects.toThrow(
-        GetInvoicesException
+        ViettelSInvoiceGetInvoicesException
       )
     })
 
-    it('should throw GetInvoicesException on error', async () => {
+    it('should throw ViettelSInvoiceGetInvoicesException on error', async () => {
       const mockToken = { access_token: 'mock_access_token' }
 
       jest.spyOn(viettelSInvoice as any, 'login').mockResolvedValueOnce(mockToken)
@@ -612,7 +616,7 @@ describe('ViettelSInvoice', () => {
       })
 
       await expect(viettelSInvoice.getInvoicesByDateRange('01/01/2023', '24/12/2024')).rejects.toThrow(
-        GetInvoicesException
+        ViettelSInvoiceGetInvoicesException
       )
     })
   })
@@ -654,7 +658,7 @@ describe('ViettelSInvoice', () => {
       )
     })
 
-    it('should throw GetInvoiceFileException on error', async () => {
+    it('should throw ViettelSInvoiceGetInvoiceFileException on error', async () => {
       const mockToken = { access_token: 'mock_access_token' }
 
       jest.spyOn(viettelSInvoice as any, 'login').mockResolvedValueOnce(mockToken)
@@ -669,7 +673,7 @@ describe('ViettelSInvoice', () => {
         templateCode: 'TEMPLATE456',
         fileType: 'PDF'
       }
-      await expect(viettelSInvoice.getInvoiceFile(params)).rejects.toThrow(GetInvoiceFileException)
+      await expect(viettelSInvoice.getInvoiceFile(params)).rejects.toThrow(ViettelSInvoiceGetInvoiceFileException)
     })
   })
 })
