@@ -1,4 +1,4 @@
-interface IViettelSInvoice {
+interface IViettelSInvoiceConfiguration {
   apiEndPoint?: string
   username: string
   password: string
@@ -16,7 +16,7 @@ interface IViettelSInvoiceLoginResponse {
   jti: string
 }
 
-interface IInvoice {
+interface IViettelSInvoice {
   generalInvoiceInfo: GeneralInvoiceInfo
   buyerInfo: BuyerInfo
   sellerInfo: SellerInfo
@@ -110,7 +110,7 @@ interface TaxBreakdown {
   taxAmount: number
 }
 
-interface IDraftInvoicePreviewResponse {
+interface IViettelSInvoiceDraftInvoicePreviewResponse {
   errorCode: any
   description: any
   fileToBytes: string
@@ -204,10 +204,10 @@ interface Invoice {
 }
 
 export {
-  IViettelSInvoice,
+  IViettelSInvoiceConfiguration,
   IViettelSInvoiceLoginResponse,
-  IInvoice,
-  IDraftInvoicePreviewResponse,
+  IViettelSInvoice,
+  IViettelSInvoiceDraftInvoicePreviewResponse,
   IViettelSInvoiceResponse,
   IViettelSInvoiceDetailResponse,
   IViettelSInvoiceGetFileResponse,

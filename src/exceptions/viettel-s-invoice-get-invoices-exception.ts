@@ -1,12 +1,12 @@
-class ViettelSInvoiceException extends Error {
+class ViettelSInvoiceGetInvoicesException extends Error {
   public originalError: unknown
 
   constructor(message: string, originalError?: unknown) {
     super(message)
-    this.name = 'ViettelSInvoiceException'
+    this.name = 'ViettelSInvoiceGetInvoicesException'
     this.message = message
     this.originalError = originalError
   }
 }
 
-export default ViettelSInvoiceException
+export default ViettelSInvoiceGetInvoicesException
