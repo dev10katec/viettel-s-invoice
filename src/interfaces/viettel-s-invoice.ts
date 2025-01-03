@@ -203,6 +203,20 @@ interface Invoice {
   originalInvoiceId: any
 }
 
+interface IViettelSInvoiceGetTemplatesResponse {
+  errorCode: any
+  description: any
+  totalRows: number
+  template?: Template[]
+}
+
+interface Template {
+  templateCode: string
+  invoiceSeri: string
+  originalTemplateCode: string
+  taxPolicy: string
+}
+
 export {
   IViettelSInvoiceConfiguration,
   IViettelSInvoiceLoginResponse,
@@ -211,5 +225,6 @@ export {
   IViettelSInvoiceResponse,
   IViettelSInvoiceDetailResponse,
   IViettelSInvoiceGetFileResponse,
-  IViettelSInvoiceDetailsResponse
+  IViettelSInvoiceDetailsResponse,
+  IViettelSInvoiceGetTemplatesResponse
 }

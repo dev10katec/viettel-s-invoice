@@ -5,3 +5,4 @@ export { default as ViettelSInvoiceGetInvoicesException } from './viettel-s-invo
 export { default as ViettelSInvoiceLoginException } from './viettel-s-invoice-login-exception'
 export { default as ViettelSInvoicePreviewDraftInvoiceException } from './viettel-s-invoice-preview-draft-invoice-exception'
 export { default as ViettelSInvoiceException } from './viettel-s-invoice-exception'
+export { default as ViettelSInvoiceGetTemplatesException } from './viettel-s-invoice-get-templates-exception'

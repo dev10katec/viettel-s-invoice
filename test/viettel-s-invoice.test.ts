@@ -3,6 +3,7 @@ import {
   ViettelSInvoiceGetInvoiceException,
   ViettelSInvoiceGetInvoiceFileException,
   ViettelSInvoiceGetInvoicesException,
+  ViettelSInvoiceGetTemplatesException,
   ViettelSInvoiceLoginException,
   ViettelSInvoicePreviewDraftInvoiceException
 } from '../src/exceptions'
@@ -13,7 +14,8 @@ import {
   IViettelSInvoiceDetailsResponse,
   IViettelSInvoiceGetFileResponse,
   IViettelSInvoiceLoginResponse,
-  IViettelSInvoiceResponse
+  IViettelSInvoiceResponse,
+  IViettelSInvoiceGetTemplatesResponse
 } from '../src/interfaces/viettel-s-invoice'
 import { GetInvoiceFileParams } from '../src/types'
 import ViettelSInvoice from '../src/viettel-s-invoice'
@@ -674,6 +676,85 @@ describe('ViettelSInvoice', () => {
         fileType: 'PDF'
       }
       await expect(viettelSInvoice.getInvoiceFile(params)).rejects.toThrow(ViettelSInvoiceGetInvoiceFileException)
+    })
+  })
+
+  describe('getInvoiceTemplates', () => {
+    it('should return a list of invoice templates on success', async () => {
+      const mockToken = { access_token: 'mock_access_token' }
+      const mockResponse: IViettelSInvoiceGetTemplatesResponse = {
+        errorCode: null,
+        description: null,
+        totalRows: 5,
+        template: [
+          {
+            templateCode: '01BLP0/HNT1',
+            invoiceSeri: 'AB/23E',
+            originalTemplateCode: '01BLP/0010',
+            taxPolicy: '0'
+          },
+          {
+            templateCode: '01BLP0/HNT2',
+            invoiceSeri: 'AB/23E',
+            originalTemplateCode: '01BLP/0010',
+            taxPolicy: '0'
+          },
+          {
+            templateCode: '01BLP0-003',
+            invoiceSeri: 'AB-23E',
+            originalTemplateCode: '01BLP/0010',
+            taxPolicy: '0'
+          },
+          {
+            templateCode: '01BLP0-003',
+            invoiceSeri: '01AB-24P',
+            originalTemplateCode: '01BLP/0010',
+            taxPolicy: '0'
+          },
+          {
+            templateCode: '01BLP0-044',
+            invoiceSeri: 'CV-24E',
+            originalTemplateCode: '01BLP/0010',
+            taxPolicy: '0'
+          }
+        ]
+      }
+
+      jest.spyOn(viettelSInvoice as any, 'login').mockResolvedValueOnce(mockToken)
+      mockAxios.post.mockResolvedValueOnce({ data: mockResponse })
+
+      const invoiceType = '01BLP'
+      const result = await viettelSInvoice.getInvoiceTemplates(invoiceType)
+
+      console.log('check result from getInvoiceTemplates', result)
+
+      expect(result).toEqual(mockResponse)
+      expect(mockAxios.post).toHaveBeenCalledWith(
+        'https://api.example.com/services/einvoiceapplication/api/InvoiceAPI/InvoiceUtilsWS/getInvoiceTemplates',
+        {
+          taxCode: 'test_user',
+          invoiceType
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer mock_access_token'
+          }
+        }
+      )
+    })
+
+    it('should throw ViettelSInvoiceGetTemplatesException on error', async () => {
+      const mockToken = { access_token: 'mock_access_token' }
+
+      jest.spyOn(viettelSInvoice as any, 'login').mockResolvedValueOnce(mockToken)
+      mockAxios.post.mockRejectedValueOnce({
+        response: {
+          data: { message: 'Error retrieving invoice templates' }
+        }
+      })
+
+      await expect(viettelSInvoice.getInvoiceTemplates('01BLP')).rejects.toThrow(ViettelSInvoiceGetTemplatesException)
     })
   })
 })
