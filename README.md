@@ -15,6 +15,7 @@ This project provides a class `ViettelSInvoice` that allows interaction with the
   - [Get Invoice by Transaction UUID](#get-invoice-by-transaction-uuid)
   - [Get Invoices by Date Range](#get-invoices-by-date-range)
   - [Get Invoice File](#get-invoice-file)
+  - [Get Invoice Templates](#get-invoice-templates)
 - [Exceptions](#exceptions)
 - [License](#license)
 
@@ -71,7 +72,7 @@ viettelSInvoice.createInvoice(invoice)
 To retrieve an invoice by its transaction UUID, use the `getInvoiceByTransactionUuid` method:
 
 ```JS
-const transactionUuid = 'your-transaction-uuid';
+const transactionUuid = '7a9f9e2a-d28f-4bef-a9d0-d91607453f70';
 
 viettelSInvoice.getInvoiceByTransactionUuid(transactionUuid)
   .then(response => console.log(response))
@@ -103,23 +104,36 @@ viettelSInvoice.getInvoicesByDateRange(fromDate, toDate)
 ```JS
 viettelSInvoice.getInvoiceFile({ invoiceNo, templateCode, fileType })
   .then(response => console.log(response))
-  .catch(error => console.log(error))
+  .catch(error => console.log(error));
 ```
 
 - invoiceNo: The invoice number.
 - templateCode: The template code for the invoice.
 - fileType: The file type (e.g., PDF, ZIP).
 
+### Get Invoice Templates
+
+- To retrieve invoice templates code, use the getInvoiceTemplates method:
+
+```JS
+const invoiceType = '01BLP'
+
+viettelSInvoice.getInvoiceTemplates(invoiceType)
+  .then(response => console.log(response))
+  .catch(error => console.log(error));
+```
+
 ## Exceptions
 
 The following exceptions are handled by the ViettelSInvoice class:
 
-- LoginException: Thrown if login fails.
-- CreateInvoiceException: Thrown if invoice creation fails.
-- ReviewDraftInvoiceException: Thrown if reviewing a draft invoice fails.
-- GetInvoiceException: Thrown if retrieving an invoice fails.
-- GetInvoicesException: Thrown if retrieving invoices by date range fails.
-- GetInvoiceFileException: Thrown if retrieving an invoice file fails.
+- ViettelSInvoiceLoginException: Thrown if login fails.
+- ViettelSInvoiceCreateInvoiceException: Thrown if invoice creation fails.
+- ViettelSInvoicePreviewDraftInvoiceException: Thrown if reviewing a draft invoice fails.
+- ViettelSInvoiceGetInvoiceException: Thrown if retrieving an invoice fails.
+- ViettelSInvoiceGetInvoicesException: Thrown if retrieving invoices by date range fails.
+- ViettelSInvoiceGetInvoiceFileException: Thrown if retrieving an invoice file fails.
+- ViettelSInvoiceGetTemplatesException: thrown if retrieving invoice templates fails
 - Each exception includes a descriptive error message.
 
 ## License

@@ -6,7 +6,8 @@ import {
   IViettelSInvoiceDetailsResponse,
   IViettelSInvoiceGetFileResponse,
   IViettelSInvoiceLoginResponse,
-  IViettelSInvoiceResponse
+  IViettelSInvoiceResponse,
+  IViettelSInvoiceGetTemplatesResponse
 } from './interfaces/viettel-s-invoice'
 import { API_ENDPOINT } from './constants'
 import axios from 'axios'
@@ -18,7 +19,8 @@ import {
   ViettelSInvoiceGetInvoiceException,
   ViettelSInvoiceGetInvoiceFileException,
   ViettelSInvoiceGetInvoicesException,
-  ViettelSInvoicePreviewDraftInvoiceException
+  ViettelSInvoicePreviewDraftInvoiceException,
+  ViettelSInvoiceGetTemplatesException
 } from './exceptions'
 
 class ViettelSInvoice {
@@ -240,6 +242,39 @@ class ViettelSInvoice {
         throw new ViettelSInvoiceGetInvoiceFileException(error.message, error?.response?.data)
       }
       throw new ViettelSInvoiceGetInvoiceFileException(`Unexpected error: ${(error as Error).message}`, error)
+    }
+  }
+
+  /**
+   * Retrieves available invoice templates for a specified invoice type.
+   *
+   * @param invoiceType - The type of invoice for which templates are requested.
+   * @returns A promise that resolves to the response containing invoice templates.
+   * @throws ViettelSInvoiceGetTemplatesException if the server response is not successful.
+   */
+  async getInvoiceTemplates(invoiceType: string): Promise<IViettelSInvoiceGetTemplatesResponse> {
+    const { access_token } = await this.login()
+
+    try {
+      const { data } = await axios.post<IViettelSInvoiceGetTemplatesResponse>(
+        this.getApiUrl('/services/einvoiceapplication/api/InvoiceAPI/InvoiceUtilsWS/getInvoiceTemplates'),
+        {
+          taxCode: this.username,
+          invoiceType
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${access_token}`
+          }
+        }
+      )
+      return data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new ViettelSInvoiceGetTemplatesException(error.message, error?.response?.data)
+      }
+      throw new ViettelSInvoiceGetTemplatesException(`Unexpected error: ${(error as Error).message}`, error)
     }
   }
 }
