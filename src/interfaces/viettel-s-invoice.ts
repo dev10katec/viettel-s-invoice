@@ -26,6 +26,14 @@ interface IViettelSInvoice {
   discountItemInfo: any[]
   summarizeInfo: SummarizeInfo
   taxBreakdowns: TaxBreakdown[]
+  metadata?: Metadata[]
+}
+
+interface Metadata {
+  keyTag: string
+  stringValue: string
+  valueType: string
+  keyLabel: string
 }
 
 interface GeneralInvoiceInfo {
