@@ -150,6 +150,14 @@ describe('ViettelSInvoice', () => {
             taxableAmount: 0,
             taxAmount: 2000
           }
+        ],
+        metadata: [
+          {
+            keyTag: 'feeName',
+            stringValue: '',
+            valueType: 'text',
+            keyLabel: 'Fee name'
+          }
         ]
       }
       const mockResponse: IViettelSInvoiceDraftInvoicePreviewResponse = {
@@ -253,6 +261,14 @@ describe('ViettelSInvoice', () => {
             taxPercentage: 10,
             taxableAmount: 0,
             taxAmount: 2000
+          }
+        ],
+        metadata: [
+          {
+            keyTag: 'feeName',
+            stringValue: '',
+            valueType: 'text',
+            keyLabel: 'Fee name'
           }
         ]
       }
